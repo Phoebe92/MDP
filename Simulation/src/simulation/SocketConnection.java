@@ -11,15 +11,24 @@ public class SocketConnection {
  boolean listening = true;
  ServerSocket serverSocket = null;
  try {
-     serverSocket = new ServerSocket(4445);
+     serverSocket = new ServerSocket(4441);
  } catch (IOException e) {
-     System.err.println("Could not listen on port: 4447.");
+     System.err.println("Could not listen on port: 4446.");
   System.exit(1);
  }
 
+// int counter = 0;
  while(listening) {
+	 
      Socket clientSocket = serverSocket.accept();
-     (new SimpleConHandler(clientSocket)).start();
+     
+     //if(counter == 0){
+    	 (new SimpleConHandler(clientSocket)).start();
+    	 //counter++;
+    // }else{
+    	// counter = 0;
+    // }
+     
  }
 
  serverSocket.close();

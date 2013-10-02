@@ -15,6 +15,7 @@ public class SimpleConHandler extends Thread
 
     	this.clientSocket = clientSocket;
     	this.client = new Client();
+    	client.initialize();
     }
 
     @Override
@@ -22,7 +23,7 @@ public class SimpleConHandler extends Thread
 
  BufferedInputStream in;
  BufferedOutputStream out;
- client.initialize();
+
  
  try {
 

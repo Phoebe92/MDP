@@ -1,4 +1,4 @@
-package maze;
+package maze_b1;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,8 +16,7 @@ public class Map {
 	private int[][] vMap;
 	private int y;
 	private int x;
-	Robot r = new Robot(1,1);
-	Client mp = new Client();
+	Robot r = new Robot(1,7);
 
 	public Map(int y, int x) {
 		this.y = y+2;
@@ -202,15 +201,15 @@ public class Map {
 	private void drawStartAndEnd(Graphics g){
 		Color c = g.getColor();
 		g.setColor(Color.GREEN);
-		g.fillRect(30, 30, 90, 90);
-		g.fillRect(18*30, 13*30, 90, 90);
+		g.fillRect(30, 7*30, 90, 90);
+		g.fillRect(11*30, 7*30, 90, 90);
 		g.setColor(c);
 	}
 	private void drawStartAndEndV(Graphics g){
 		Color c = g.getColor();
 		g.setColor(Color.GREEN);
-		g.fillRect(30+700, 30, 30, 30);
-		g.fillRect(18*30+700, 13*30, 30, 30);
+		g.fillRect(30+700, 7*30, 30, 30);
+		g.fillRect(11*30+700, 7*30, 30, 30);
 		g.setColor(c);
 	}
 
@@ -219,26 +218,13 @@ public class Map {
 	private List<Node> closed = new ArrayList<Node>();
 	private List<Node> open = new ArrayList<Node>();
 	
-	public void setUnvisitedAsWall(){
-		for (int i = 0; i < 17; i++){
-			for (int j = 0; j < 22; j++){
-				System.out.println(mapNode[i][j].isVisited());
-				if (mapNode[i][j].isVisited() == false){
-					mapNode[i][j].setWall(true);
-				}
-			}
-		}
-		
-		mapNode[13][18].setWall(false);
-	}
-	
 	public void initialNode(){
 		for(int nodei = 0;nodei<17;nodei++){
 			for(int nodej = 0;nodej<22;nodej++){
 				if(vMap[nodei][nodej]==0||vMap[nodei][nodej]==2){
-					mapNode[nodei][nodej] = new Node(nodei,nodej,16+21-nodei-nodej,0,0,true,false);
+					mapNode[nodei][nodej] = new Node(nodei,nodej,Math.abs(7-nodei)+11-nodej,0,0,false,false);
 				}else
-					mapNode[nodei][nodej] = new Node(nodei,nodej,16+21-nodei-nodej,0,0,true,true);
+					mapNode[nodei][nodej] = new Node(nodei,nodej,Math.abs(7-nodei)+11-nodej,0,0,false,true);
 			}
 		}	
 	}
@@ -267,15 +253,11 @@ public class Map {
 		boolean gBest;
 		open.add(mapNode[y][x]);
 		//System.out.println("b1");
-		if(x == mp.getEndX() && y == mp.getEndY()){
-			return s;
-		}
-		
 		while(!open.isEmpty()){
 			cur = findLowest();
 			//updateVMap(cur.getX(),cur.getY(),2);
 			//System.out.println(cur.getX()+" "+cur.getY());
-			if((cur.getX() == mp.getEndY())&&(cur.getY() == mp.getEndX())){
+			if((cur.getX() == 7)&&(cur.getY() == 11)){
 				while(cur.getParent().getParent()!=null){
 					//System.out.println(cur.getX()+" "+cur.getY());
 					
@@ -312,16 +294,9 @@ public class Map {
 				updateMap(cur.getX(),cur.getY()+2,2);
 				
 				updateVMap(cur.getX(),cur.getY(),2);
-				
-				if((cur.getParent().getX()==mp.getEndY()-1 && cur.getParent().getY()== mp.getEndX())||(cur.getParent().getX()==mp.getEndY()+1&&cur.getParent().getY()==mp.getEndX())||(cur.getParent().getX()==mp.getEndY()&&cur.getParent().getY()==mp.getEndX()+1)||(cur.getParent().getX()==mp.getEndY()&&cur.getParent().getY()==mp.getEndX()-1)){			
-					s = Integer.toString(cur.getX())+","+Integer.toString(cur.getY());
-				}
-				
 				return s;
 			}
 			closed.add(cur);
-			mapNode[cur.getX()][cur.getY()].setVisited(true);
-			System.out.println("set true");
 			open.remove(cur);
 						
 		near = findNear(cur);
@@ -358,12 +333,13 @@ public class Map {
 		List<Node> near = new ArrayList<Node>();
 		if(cur.getX()>0)
 			near.add(mapNode[cur.getX()-1][cur.getY()]);
-		if(cur.getX()<17)
-			near.add(mapNode[cur.getX()+1][cur.getY()]);
 		if(cur.getY()>0)
 			near.add(mapNode[cur.getX()][cur.getY()-1]);
+		if(cur.getX()<17)
+			near.add(mapNode[cur.getX()+1][cur.getY()]);		
 		if(cur.getY()<22)
 			near.add(mapNode[cur.getX()][cur.getY()+1]);
+		
 		return near;
 	}
 	private Node findLowest(){

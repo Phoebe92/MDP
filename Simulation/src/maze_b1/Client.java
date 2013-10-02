@@ -1,4 +1,4 @@
-package maze;
+package maze_b1;
 
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -13,7 +13,7 @@ public class Client extends Frame{
 
 	private static Map map = new Map(15,20);
 	private static int x=1;
-	private static int y=1;
+	private static int y=7;
 	private static String s;
 	private String direction = "east";
 	private static String[] parts;
@@ -25,52 +25,6 @@ public class Client extends Frame{
     static String[] ss = null;
 	static String instruction = "";
     
-	
-	private static int startX = 1;
-	private static int startY = 1;
-	private static int endX = 18;
-	private static int endY = 13;
-	
-	public static int getStartX() {
-		return startX;
-	}
-
-
-	public static void setStartX(int startX) {
-		Client.startX = startX;
-	}
-
-
-	public static int getStartY() {
-		return startY;
-	}
-
-
-	public static void setStartY(int startY) {
-		Client.startY = startY;
-	}
-
-
-	public static int getEndX() {
-		return endX;
-	}
-
-
-	public static void setEndX(int endX) {
-		Client.endX = endX;
-	}
-
-
-	public static int getEndY() {
-		return endY;
-	}
-
-
-	public static void setEndY(int endY) {
-		Client.endY = endY;
-	}
-
-	
     public void initialize(){
     	mp1 = new Client();
     	map.readMap();
@@ -82,20 +36,6 @@ public class Client extends Frame{
 		map.initialNode();
     }
     
-    
-    private void switchGoal(){
-    	int tempX = startX;
-    	int tempY = startY;
-    	startX = endX;
-    	startY = endY;
-    	endX = tempX;
-    	endY = tempY;
-    	System.out.println("start: " + startX + ", " + startY);
-    	System.out.println("end: " + endX + ", " + endY);
-    	
-    }
-    
-        
     public  String sendInstruction(String obstacles){
     	
     	obstacles  = obstacles.trim();
@@ -105,8 +45,8 @@ public class Client extends Frame{
     	// update map if obstacles != "START" and obstacles.length > 1
     	
     	if (obstacles.equals("START")){
-    		x = startX;
-    		y = startY;
+    		x = 1;
+    		y = 1;
     	}
     	
     	//if(!(obstacles.equals("\\|") || (obstacles.equals("START")) || !(obstacles.contains("|")))){
@@ -124,13 +64,7 @@ public class Client extends Frame{
         System.out.println("s: " + s + "_");
         System.out.println("x: " + x + ", y: " + y);
         if(s == null){
-        	if(x == endX && y == endY){
-        		switchGoal();
-        		System.out.println("before:");
-        		map.testPrintNode();
-        		map.setUnvisitedAsWall();
-        		System.out.println("after:");
-        		map.testPrintNode();
+        	if(x == 18 && y == 13){
         		return "disconnect";
         	}
             System.out.println("Sorry, there is no way to the end!!");
@@ -167,7 +101,7 @@ public class Client extends Frame{
 		//map.findShortestPath(x,y);
 		String instruction = null;
 		
-		while(x!=18 || y!=13){
+		while(x!=11 || y!=7){
             map.explore();
             ss = map.recieve();
             
