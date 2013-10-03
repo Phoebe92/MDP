@@ -105,6 +105,11 @@ public class Client extends Frame{
             map.explore();
             ss = map.recieve();
             
+            System.out.println("before: " + ss.length);
+            //convert format of string array ss
+            ss = mp1.convertArray(ss);
+            System.out.println("after: " + ss.length);
+            
             map.updateMap(ss);
             map.constructMap();
             map.constructVirtualMap();
@@ -226,6 +231,48 @@ public class Client extends Frame{
 		
 		
 		return instruction;
+	}
+	
+
+	public String [] convertArray (String [] ss){
+		int intFL = Integer.parseInt(ss[0]);
+		int intFM = Integer.parseInt(ss[1]);
+		int intFR = Integer.parseInt(ss[2]);
+		int intR = Integer.parseInt(ss[3]);
+		
+		switch (direction){
+			case "east":
+				System.out.println("towards east");
+				ss[0] = (x + 3 + (intFL / 10)) + "," + y;
+				ss[1] = (x + 3 + (intFM / 10)) + "," + (y + 1);
+				ss[2] = (x + 3 + (intFR / 10)) + "," + (y + 2);
+				ss[3] = (x + 1) + "," + (y + 3 + (intR / 10));
+				break;
+			case "west":
+				System.out.println("towards west");
+				ss[0] = (x - 1 - (intFL / 10)) + "," + (y + 2);
+				ss[1] = (x - 1 - (intFM / 10)) + "," + (y + 1);
+				ss[2] = (x - 1 - (intFR / 10)) + "," + y;
+				ss[3] = (x + 1) + "," + (y - 1 + (intR / 10));
+				break;
+			case "north":
+				System.out.println("towards north");
+				ss[0] = x + "," + (y - 1 - (intFL / 10));
+				ss[1] = (x + 1) + "," + (y - 1 - (intFM / 10));
+				ss[2] = (x + 2) + "," + (y - 1 - (intFR / 10));
+				ss[3] = (x + 3 + (intR / 10)) + "," + (y + 1);
+				break;
+			case "south":
+				System.out.println("towards south");
+				ss[0] = (x + 2)  + "," + (y + 3 + (intFL / 10));
+				ss[1] = (x + 1) + "," + (y + 3 + (intFM / 10));
+				ss[2] = x + "," + (y + 3 + (intFR / 10));
+				ss[3] = (x - 1 - (intR / 10)) + "," + (y - 1);
+				break;
+				
+		}
+		
+		return ss;
 	}
 	
 	

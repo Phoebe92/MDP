@@ -13,7 +13,7 @@ public class SocketConnection {
  boolean listening = true;
  ServerSocket serverSocket = null;
  try {
-     serverSocket = new ServerSocket(4444);
+     serverSocket = new ServerSocket(4449);
  } catch (IOException e) {
      System.err.println("Could not listen on port: 4446.");
   System.exit(1);

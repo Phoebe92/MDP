@@ -114,7 +114,7 @@ public class Client extends Frame{
     }
     
     
-    private void switchGoal(){
+    public void switchGoal(){
     	int tempX = startX;
     	int tempY = startY;
     	startX = endX;

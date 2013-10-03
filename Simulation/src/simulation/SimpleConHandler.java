@@ -75,10 +75,10 @@ public class SimpleConHandler extends Thread
     				
     				// when last step is removed from shortest path stack
     				// meaning that robot's current position is at 1,1
-    				if (path.empty()){
-    					if (client.getX() == 1 && client.getY() == 1){
-    						instr = "disconnect";    						
-    					}	    		 
+    				if (path.empty() && client.getX() == 1 && client.getY() == 1){
+    					instr = "disconnect";    	
+    					client.switchGoal();
+    						 
     				}else{
     					// check if previous instruction is "turn left" or "turn right"
     					// if not, pop next step from shortest path stack

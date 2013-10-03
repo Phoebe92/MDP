@@ -236,9 +236,9 @@ public class Map {
 		for(int nodei = 0;nodei<17;nodei++){
 			for(int nodej = 0;nodej<22;nodej++){
 				if(vMap[nodei][nodej]==0||vMap[nodei][nodej]==2){
-					mapNode[nodei][nodej] = new Node(nodei,nodej,16+21-nodei-nodej,0,0,true,false);
+					mapNode[nodei][nodej] = new Node(nodei,nodej,16+21-nodei-nodej,0,0,false,false);
 				}else
-					mapNode[nodei][nodej] = new Node(nodei,nodej,16+21-nodei-nodej,0,0,true,true);
+					mapNode[nodei][nodej] = new Node(nodei,nodej,16+21-nodei-nodej,0,0,false,true);
 			}
 		}	
 	}
