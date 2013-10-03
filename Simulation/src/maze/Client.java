@@ -9,6 +9,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
+import java.util.Stack;
+
 public class Client extends Frame{
 
 	private static Map map = new Map(15,20);
@@ -21,7 +23,7 @@ public class Client extends Frame{
     JInternalFrame frame1, frame2;
     JFrame frame;
     Client mp1 ;
-    
+        
     static String[] ss = null;
 	static String instruction = "";
     
@@ -30,6 +32,13 @@ public class Client extends Frame{
 	private static int startY = 1;
 	private static int endX = 18;
 	private static int endY = 13;
+	
+	private static Stack<String> shortestPath = new Stack<String>();
+	public static Stack<String> getShortestPath() {
+		return shortestPath;
+	}
+
+	private static int stackCounter = 0;
 	
 	public static int getStartX() {
 		return startX;
@@ -71,7 +80,29 @@ public class Client extends Frame{
 	}
 
 	
-    public void initialize(){
+	
+    public int getX() {
+		return x;
+	}
+
+
+	public int getY() {
+		return y;
+	}
+
+	
+
+	public void setX(int x) {
+		Client.x = x;
+	}
+
+
+	public void setY(int y) {
+		Client.y = y;
+	}
+
+
+	public void initialize(){
     	mp1 = new Client();
     	map.readMap();
 		//mp1.launchFrame();	
@@ -107,6 +138,13 @@ public class Client extends Frame{
     	if (obstacles.equals("START")){
     		x = startX;
     		y = startY;
+    		
+    		if (shortestPath.empty()){
+    			// initialize stack
+        		shortestPath = new Stack<String>();
+        		shortestPath.push(x + "," + y);
+    		}
+    		
     	}
     	
     	//if(!(obstacles.equals("\\|") || (obstacles.equals("START")) || !(obstacles.contains("|")))){
@@ -131,18 +169,44 @@ public class Client extends Frame{
         		map.setUnvisitedAsWall();
         		System.out.println("after:");
         		map.testPrintNode();
+        		
+        		System.out.println("Stack: \n" + shortestPath);
         		return "disconnect";
         	}
             System.out.println("Sorry, there is no way to the end!!");
             return "error";
         }else {
-        	instruction = mp1.getInstruction(x, y, s);
-        	if(instruction.equals("u")||instruction.equals("b")){
-        		parts = s.split(",");
+        	parts = s.split(",");
+        	instruction = mp1.getInstruction(x, y, Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
+        	if(instruction.equals("u")||instruction.equals("b")){        		
         		y = Integer.parseInt(parts[0]);
         		x = Integer.parseInt(parts[1]);
         		System.out.println(instruction);
         		map.r.update(x, y);
+        		
+        		/* push x and y to stack
+        		 
+        		 before pushing a new node into stack, int count = stack.search(new node);
+        		 then, use count to pop total (count) nodes from stack
+        		*/
+        		stackCounter = shortestPath.search(x + "," + y);
+        		System.out.println("current stack:" + shortestPath);
+        		System.out.println(x + "," + y + " is at " + stackCounter);
+        		if (stackCounter == -1){
+        			shortestPath.push(x + "," + y);
+        		}else{
+        			// if found at 6, pop 5 times
+        			stackCounter --;
+        			while(stackCounter > 0){
+        				 System.out.println("Removed : "+ shortestPath.pop());
+        				 stackCounter--;        				
+        			}
+        			System.out.println("current stack:" + shortestPath);
+        		}
+        		
+        		
+        		
+        		
         	}else {
             	System.out.println(instruction.charAt(0));
             }
@@ -182,9 +246,9 @@ public class Client extends Frame{
                 System.out.println("Sorry, there is no way to the end!!");
                 return;
             }else {
-            	instruction = mp1.getInstruction(x, y, s);
+            	parts = s.split(",");
+            	instruction = mp1.getInstruction(x, y, Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
             	if(instruction.equals("u")||instruction.equals("b")){
-            		parts = s.split(",");
             		y = Integer.parseInt(parts[0]);
             		x = Integer.parseInt(parts[1]);
             		System.out.println(instruction);
@@ -197,12 +261,12 @@ public class Client extends Frame{
 		}
 	}
 	
-	public String getInstruction(int x, int y, String s){
+	
+	
+	
+	public String getInstruction(int x, int y, int newX, int newY){
 		String instruction = "";
-		String [] newXY = s.split(",");
-		int newY = Integer.parseInt(newXY[0]);
-		int newX = Integer.parseInt(newXY[1]);
-        
+		        
 		switch (direction){
 			case "east":
 				if (newX == x){

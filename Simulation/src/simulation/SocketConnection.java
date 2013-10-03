@@ -4,6 +4,8 @@ package simulation;
 import java.io.*;
 import java.net.*;
 
+import maze.Client;
+
 public class SocketConnection {
 
     public static void main(String[] args) throws IOException {
@@ -11,23 +13,24 @@ public class SocketConnection {
  boolean listening = true;
  ServerSocket serverSocket = null;
  try {
-     serverSocket = new ServerSocket(4441);
+     serverSocket = new ServerSocket(4444);
  } catch (IOException e) {
      System.err.println("Could not listen on port: 4446.");
   System.exit(1);
  }
 
-// int counter = 0;
+ int counter = 0;
  while(listening) {
 	 
      Socket clientSocket = serverSocket.accept();
+     (new SimpleConHandler(clientSocket, counter)).start();
      
-     //if(counter == 0){
-    	 (new SimpleConHandler(clientSocket)).start();
-    	 //counter++;
-    // }else{
-    	// counter = 0;
-    // }
+     if(counter == 0){    	 
+    	 counter++;
+     }else{
+    	 //System.out.println("from socket connection: " + Client.getShortestPath());    	 
+    	 counter = 0;
+     }
      
  }
 

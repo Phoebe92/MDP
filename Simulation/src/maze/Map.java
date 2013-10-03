@@ -321,7 +321,7 @@ public class Map {
 			}
 			closed.add(cur);
 			mapNode[cur.getX()][cur.getY()].setVisited(true);
-			System.out.println("set true");
+			//System.out.println("set true");
 			open.remove(cur);
 						
 		near = findNear(cur);
