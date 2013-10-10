@@ -3,6 +3,8 @@ package simulation;
 import maze.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class SimpleConHandler extends Thread
@@ -49,6 +51,7 @@ public class SimpleConHandler extends Thread
     		int bytesRead = 0;
     		int n;
     		
+    		
     		// reading algorithm
     		//n = in.read(msg);
     		//System.out.println("Received outside while:" + new String(msg));
@@ -74,7 +77,15 @@ public class SimpleConHandler extends Thread
     				instr = client.sendInstruction(s);
     			}else{
     				// going back from goal to start    				
+    				if(!client.bulkInstruction.isEmpty()){
+    					instr = client.bulkInstruction.remove(0);        				
+    				}else{
+    					instr = "disconnect";    	
+    					client.switchGoal();
+    				}
     				
+    				    				
+    				/*
     				path = Client.getShortestPath();
     				
     				// when last step is removed from shortest path stack
@@ -111,8 +122,11 @@ public class SimpleConHandler extends Thread
     					}
 	    	 	
     				}
+    				*/
 	    	 
     			}
+    			
+    			
 	    		 
     			instr += "\r\n\0";
     			byte[] bytes = instr.getBytes();

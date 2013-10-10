@@ -9,6 +9,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class Client extends Frame{
@@ -23,7 +25,10 @@ public class Client extends Frame{
     JInternalFrame frame1, frame2;
     JFrame frame;
     Client mp1 ;
-        
+    int turningCounter = 0;
+    public List<String> bulkInstruction = new ArrayList<String>();
+	
+    
     static String[] ss = null;
 	static String instruction = "";
     
@@ -179,10 +184,24 @@ public class Client extends Frame{
         		map.testPrintNode();
         		
         		System.out.println("Stack: \n" + shortestPath);
-        		return "disconnect";
+        		
+        		if(turningCounter == 0){
+        			turningCounter++;
+        			if(direction.equals("east")){
+        				direction = "west";
+        			}else if(direction.equals("south")){
+        				direction = "north";
+        			}
+        			return "04a";
+        		}else{
+        			bulkInstruction = mp1.getBulkInstruction();            		
+        			return "disconnect";
+        		}       		
+        		        		
         	}
             System.out.println("Sorry, there is no way to the end!!");
-            return "error";
+            map.refreshMap();
+            return "00w";
         }else {
         	parts = s.split(",");
         	instruction = mp1.getInstruction(x, y, Integer.parseInt(parts[1]), Integer.parseInt(parts[0]));
@@ -225,10 +244,34 @@ public class Client extends Frame{
     
     
 	public static void main(String[] args) {
+		Client mp1 = new Client();
+		
+		// test bulk instruction
+		
+		String [] arrInstr = {"1,1", "1,2", "1,3", "1,4", "1,5",
+		                      "1,6", "1,7", "1,8", "2,8", "3,8",
+		                      "4,8", "5,8", "5,7", "5,6", "5,5",
+		                      "6,5", "7,5", "8,5", "9,5", "9,6",
+		                      "10,6", "11,6", "11,5", "11,4", "11,3",
+		                      "12,3", "13,3", "14,3", "15,3", "16,3",
+		                      "16,4", "16,5", "16,6", "16,7", "16,8",
+		                      "16,9", "16,10", "16,11", "16,12", "16,13",
+		                      "17,13", "18,13"};
+		
+		for (int i = 0; i < arrInstr.length; i++){
+			shortestPath.push(arrInstr[i]);
+		}
+		List<String> bulkInstruction = new ArrayList<String>();
+		bulkInstruction = mp1.getBulkInstruction();
+		
+		for (int j = 0; j < bulkInstruction.size(); j++){
+			System.out.println(bulkInstruction.get(j));
+		}
+		
 		// TODO Auto-generated method stub
 		String str = "2|";
 		System.out.println(!(str.contains("|")));
-		Client mp1 = new Client();
+		
 		map.readMap();
 		mp1.launchFrame();	
 		map.list();
@@ -267,6 +310,78 @@ public class Client extends Frame{
             }
             //map.list();
 		}
+	}
+	
+	
+	public List<String> getBulkInstruction(){
+		List<String> bulkInstruction = new ArrayList<String>();
+		String curPos = "";
+		String nextPos = "";
+		String[] cur = null;
+		String[] next = null;
+		String instr = "";
+		String preInstr = "";
+		int totalSteps = 0;
+		int steps = 0;
+		String curInstr = "";
+		String instrToAdd = "";
+		
+		// get goal position as the current position		
+		curPos = shortestPath.pop();
+		while (!shortestPath.isEmpty()){
+			// get next position
+			if(!(preInstr.equals("a") || preInstr.equals("d"))){
+				nextPos = shortestPath.pop();				
+			}
+			
+			// split position strings
+			cur = curPos.split(",");
+			next = nextPos.split(",");
+			
+			instr = getInstruction(Integer.parseInt(cur[0]), Integer.parseInt(cur[1]),
+					Integer.parseInt(next[0]), Integer.parseInt(next[1]));
+			
+			steps = Integer.parseInt(instr.substring(1, 2));
+			curInstr = instr.substring(2, 3);
+			
+			// for first instruction
+			if(preInstr.isEmpty()){
+				System.out.println("This is the first instruction.");
+				preInstr = curInstr;
+				totalSteps += steps;
+			}else if(preInstr.equals(curInstr)){
+				totalSteps += steps;
+			}else if(!preInstr.equals(curInstr)){
+				// add bulk instruction to list
+				instrToAdd = "";
+				
+				if (totalSteps < 10){
+					instrToAdd += "0";
+				}
+				instrToAdd += totalSteps + preInstr;
+				bulkInstruction.add(instrToAdd);
+				
+				totalSteps = steps;
+				preInstr = curInstr;								
+			}
+			System.out.println("currently: " + totalSteps + " steps of " + preInstr);
+			
+			if(curInstr.equals("w") || curInstr.equals("s")){
+				curPos = nextPos;
+			}
+						
+		}
+		
+		// add the last instruction
+		instrToAdd = "";
+		
+		if (totalSteps < 10){
+			instrToAdd += "0";
+		}
+		instrToAdd += totalSteps + preInstr;
+		bulkInstruction.add(instrToAdd);
+		
+		return bulkInstruction;
 	}
 	
 	

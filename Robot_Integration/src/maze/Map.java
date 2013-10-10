@@ -84,6 +84,15 @@ public class Map {
 		}
 	}
 	
+	public void refreshMap(){
+		int i, j;
+		for(i = 1; i < (y - 1); i++){
+			for (j = 1; j < (x - 1); j++){
+				map[i][j] = 0;
+			}
+		}
+	}
+	
 	
 	public void constructVirtualMap(){
 		int i,j;
@@ -410,11 +419,11 @@ public class Map {
 		String[] parts;
 		for(;i<s.length;i++){
 			parts = s[i].split(",");
-			y = Integer.parseInt(parts[0]);
-			x = Integer.parseInt(parts[1]);
+			x = Integer.parseInt(parts[0]);
+			y = Integer.parseInt(parts[1]);
 			System.out.println(s[i]);
 			if ((x > 0 && x < 21) && (y > 0 && y < 16)){
-				updateMap(x,y,1);
+				updateMap(y,x,1);
 			}
 		}
 	}
