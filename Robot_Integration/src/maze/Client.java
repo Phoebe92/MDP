@@ -13,13 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import simulation.*;
+
 public class Client extends Frame{
 
 	private static Map map = new Map(15,20);
 	private static int x=1;
 	private static int y=1;
 	private static String s;
-	private String direction = "east";
+	//public static String direction = "east";
 	private static String[] parts;
     JDesktopPane desk;
     JInternalFrame frame1, frame2;
@@ -187,10 +189,10 @@ public class Client extends Frame{
         		
         		if(turningCounter == 0){
         			turningCounter++;
-        			if(direction.equals("east")){
-        				direction = "west";
-        			}else if(direction.equals("south")){
-        				direction = "north";
+        			if(SocketConnection.direction.equals("east")){
+        				SocketConnection.direction = "west";
+        			}else if(SocketConnection.direction.equals("south")){
+        				SocketConnection.direction = "north";
         			}
         			return "04a";
         		}else{
@@ -390,17 +392,17 @@ public class Client extends Frame{
 	public String getInstruction(int x, int y, int newX, int newY){
 		String instruction = "";
 		        
-		switch (direction){
+		switch (SocketConnection.direction){
 			case "east":
 				if (newX == x){
 					if (newY == (y - 1)){
 						// turn left and step forward
 						instruction = "02a"; //"lu";
-						direction = "north";
+						SocketConnection.direction = "north";
 					}else if (newY == (y + 1)){
 						// turn right and step forward
 						instruction = "02d";
-						direction = "south";
+						SocketConnection.direction = "south";
 					}
 				}else if (newY == y){
 					if (newX == (x - 1)){
@@ -417,11 +419,11 @@ public class Client extends Frame{
 					if (newY == (y - 1)){
 						// turn right and step forward
 						instruction = "02d";
-						direction = "north";
+						SocketConnection.direction = "north";
 					}else if (newY == (y + 1)){
 						// turn left and step forward
 						instruction = "02a";
-						direction = "south";
+						SocketConnection.direction = "south";
 					}
 				}else if (newY == y){
 					if (newX == (x - 1)){
@@ -446,11 +448,11 @@ public class Client extends Frame{
 					if (newX == (x - 1)){
 						// turn left and step forward
 						instruction = "02a";
-						direction = "west";
+						SocketConnection.direction = "west";
 					}else if (newX == (x + 1)){
 						// turn right and step forward
 						instruction = "02d";
-						direction = "east";
+						SocketConnection.direction = "east";
 					}
 				}
 				break;
@@ -467,11 +469,11 @@ public class Client extends Frame{
 					if (newX == (x - 1)){
 						// turn right and step forward
 						instruction = "02d";
-						direction = "west";
+						SocketConnection.direction = "west";
 					}else if (newX == (x + 1)){
 						// turn left and step forward
 						instruction = "02a";
-						direction = "east";
+						SocketConnection.direction = "east";
 					}
 				}
 				break;
@@ -489,7 +491,7 @@ public class Client extends Frame{
 		int intFR = Integer.parseInt(ss[2]);
 		int intR = Integer.parseInt(ss[3]);
 		
-		switch (direction){
+		switch (SocketConnection.direction){
 			case "east":
 				System.out.println("towards east");
 				ss[0] = (x + 2 + (intFL / 10)) + "," + y;

@@ -7,6 +7,7 @@ import java.net.*;
 import maze.Client;
 
 public class SocketConnection {
+	public static String direction = "east";
 
     public static void main(String[] args) throws IOException {
 
