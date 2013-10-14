@@ -1,3 +1,4 @@
+//latest version of old algo
 package maze;
 
 import java.awt.Color;
