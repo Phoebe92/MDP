@@ -3,11 +3,13 @@ package simulation;
 
 import java.io.*;
 import java.net.*;
-
+import java.util.*;
 import maze.Client;
 
 public class SocketConnection {
-	public static String direction = "east";
+	public static String direction = "south";
+ 	public static List<String> bulkInstruction = new ArrayList<String>();
+	public static Stack<String> shortestPath = new Stack<String>();
 
     public static void main(String[] args) throws IOException {
 

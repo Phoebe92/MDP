@@ -50,6 +50,7 @@ public class SimpleConHandler extends Thread
     		byte[] omsg = new byte[10];
     		int bytesRead = 0;
     		int n;
+		int uTurnCount = 0;
     		
     		
     		// reading algorithm
@@ -74,12 +75,23 @@ public class SimpleConHandler extends Thread
 		     
     			if(counter == 0){
     				// going from start to goal
-    				instr = client.sendInstruction(s);
-    			}else{
-    				// going back from goal to start    				
-    				if(!client.bulkInstruction.isEmpty()){
-    					instr = client.bulkInstruction.remove(0);        				
+    				if(instr.equals("02a\r\n\0") && uTurnCount == 0 && client.getX() == 18 && client.getY() == 13){
+    					instr = "02a";
+					uTurnCount++;
+				}else if(instr.equals("02a\r\n\0") && uTurnCount == 1 && client.getX() == 18 && client.getY() == 13){    					
+					System.out.println("going to disconnect soon...");
+    					instr = "disconnect";
     				}else{
+    					instr = client.sendInstruction(s);
+    				}
+    			}else{
+    				// going back from goal to start
+    				
+				System.out.println("cur x: " + client.getX() + ", cur y: " + client.getY());
+    				if(!SocketConnection.bulkInstruction.isEmpty()){
+    					instr = SocketConnection.bulkInstruction.remove(0);        				
+    				}else{
+    					System.out.println("bulk instruction list is empty");    					
     					instr = "disconnect";    	
     					client.switchGoal();
     				}
@@ -150,7 +162,7 @@ public class SimpleConHandler extends Thread
     			String d = new String(msg);
     			System.out.println("Sent:"+d);
 	     
-    			Thread.sleep(350);
+    			Thread.sleep(1500);
     		}
     		/* while((n = in.read(msg, bytesRead, 256)) != -1) {
 				  bytesRead += n;

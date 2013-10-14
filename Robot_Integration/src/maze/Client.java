@@ -28,7 +28,7 @@ public class Client extends Frame{
     JFrame frame;
     Client mp1 ;
     int turningCounter = 0;
-    public List<String> bulkInstruction = new ArrayList<String>();
+    //public List<String> bulkInstruction = new ArrayList<String>();
 	
     
     static String[] ss = null;
@@ -40,9 +40,9 @@ public class Client extends Frame{
 	private static int endX = 18;
 	private static int endY = 13;
 	
-	private static Stack<String> shortestPath = new Stack<String>();
+	//private static Stack<String> shortestPath = new Stack<String>();
 	public static Stack<String> getShortestPath() {
-		return shortestPath;
+		return SocketConnection.shortestPath;
 	}
 
 	private static int stackCounter = 0;
@@ -146,11 +146,11 @@ public class Client extends Frame{
     		x = startX;
 	    	y = startY;
     		
-	    	if (shortestPath.empty()){
+	    	if (SocketConnection.shortestPath.empty()){
 	    		
 				// initialize stack
-	    		shortestPath = new Stack<String>();
-	    		shortestPath.push(x + "," + y);
+	    		SocketConnection.shortestPath = new Stack<String>();
+	    		SocketConnection.shortestPath.push(x + "," + y);
 	    	}
 	    	return "00w";
     		
@@ -185,7 +185,7 @@ public class Client extends Frame{
         		System.out.println("after:");
         		map.testPrintNode();
         		
-        		System.out.println("Stack: \n" + shortestPath);
+        		System.out.println("Stack: \n" + SocketConnection.shortestPath);
         		
         		if(turningCounter == 0){
         			turningCounter++;
@@ -194,9 +194,10 @@ public class Client extends Frame{
         			}else if(SocketConnection.direction.equals("south")){
         				SocketConnection.direction = "north";
         			}
-        			return "04a";
+        			SocketConnection.bulkInstruction = mp1.getBulkInstruction();          		
+        			return "02a";
         		}else{
-        			bulkInstruction = mp1.getBulkInstruction();            		
+        			SocketConnection.bulkInstruction = mp1.getBulkInstruction();            		
         			return "disconnect";
         		}       		
         		        		
@@ -218,19 +219,19 @@ public class Client extends Frame{
         		 before pushing a new node into stack, int count = stack.search(new node);
         		 then, use count to pop total (count) nodes from stack
         		*/
-        		stackCounter = shortestPath.search(x + "," + y);
-        		System.out.println("current stack:" + shortestPath);
+        		stackCounter = SocketConnection.shortestPath.search(x + "," + y);
+        		System.out.println("current stack:" + SocketConnection.shortestPath);
         		System.out.println(x + "," + y + " is at " + stackCounter);
         		if (stackCounter == -1){
-        			shortestPath.push(x + "," + y);
+        			SocketConnection.shortestPath.push(x + "," + y);
         		}else{
         			// if found at 6, pop 5 times
         			stackCounter --;
         			while(stackCounter > 0){
-        				 System.out.println("Removed : "+ shortestPath.pop());
+        				 System.out.println("Removed : "+ SocketConnection.shortestPath.pop());
         				 stackCounter--;        				
         			}
-        			System.out.println("current stack:" + shortestPath);
+        			System.out.println("current stack:" + SocketConnection.shortestPath);
         		}
         		
         		
@@ -261,7 +262,7 @@ public class Client extends Frame{
 		                      "17,13", "18,13"};
 		
 		for (int i = 0; i < arrInstr.length; i++){
-			shortestPath.push(arrInstr[i]);
+			SocketConnection.shortestPath.push(arrInstr[i]);
 		}
 		List<String> bulkInstruction = new ArrayList<String>();
 		bulkInstruction = mp1.getBulkInstruction();
@@ -329,20 +330,26 @@ public class Client extends Frame{
 		String instrToAdd = "";
 		
 		// get goal position as the current position		
-		curPos = shortestPath.pop();
-		while (!shortestPath.isEmpty()){
+		curPos = SocketConnection.shortestPath.pop();
+		while (!SocketConnection.shortestPath.isEmpty()){
 			// get next position
 			if(!(preInstr.equals("a") || preInstr.equals("d"))){
-				nextPos = shortestPath.pop();				
+				nextPos = SocketConnection.shortestPath.pop();				
 			}
 			
 			// split position strings
 			cur = curPos.split(",");
 			next = nextPos.split(",");
+
+			//y = Integer.parseInt(cur[0]);
+            		//x = Integer.parseInt(cur[1]);
+
 			
 			instr = getInstruction(Integer.parseInt(cur[0]), Integer.parseInt(cur[1]),
 					Integer.parseInt(next[0]), Integer.parseInt(next[1]));
 			
+			bulkInstruction.add(instr);
+
 			steps = Integer.parseInt(instr.substring(1, 2));
 			curInstr = instr.substring(2, 3);
 			
@@ -353,15 +360,27 @@ public class Client extends Frame{
 				totalSteps += steps;
 			}else if(preInstr.equals(curInstr)){
 				totalSteps += steps;
+				
+				if(totalSteps >= 2){
+					instrToAdd = "02" + preInstr;
+					//bulkInstruction.add(instrToAdd);				
+
+					totalSteps -= 2;
+					if(totalSteps == 0){
+						preInstr = "";
+					}
+				}
+				
 			}else if(!preInstr.equals(curInstr)){
 				// add bulk instruction to list
-				instrToAdd = "";
+				//instrToAdd = "";
 				
-				if (totalSteps < 10){
-					instrToAdd += "0";
-				}
-				instrToAdd += totalSteps + preInstr;
-				bulkInstruction.add(instrToAdd);
+				//if (totalSteps < 10){
+				//	instrToAdd += "0";
+				//}
+				instrToAdd = "0" + totalSteps + preInstr;
+				
+				//bulkInstruction.add(instrToAdd);
 				
 				totalSteps = steps;
 				preInstr = curInstr;								
@@ -370,7 +389,12 @@ public class Client extends Frame{
 			
 			if(curInstr.equals("w") || curInstr.equals("s")){
 				curPos = nextPos;
+				//y = Integer.parseInt(next[0]);
+            			//x = Integer.parseInt(next[1]);
+
 			}
+			
+			//System.out.println("cur x: " + x + ", cur y: " + y);
 						
 		}
 		
